@@ -1,36 +1,6 @@
-// Thanks http://www.svendtofte.com/code/usefull_prototypes/
-Array.prototype.isEqual = function(other) {
-  if (this.length != other.length) return false;
-  for (var p = 0; p < other.length; p++) {
-    if(Object.equal( this[p], other[p] )) return false;
-  }
-  return true;
-}
-
-Object.prototype.isEqual = function(other) {
-  if(this.attributes().length != other.attributes().length) return false;
-  for(var p in this){
-    if(Object.equal( this[p], other[p] )) return false;
-  }
-  return true;
-}
-
-Object.equal = function(one, two){
-  if(typeof(one) == "object" && one != null && one.isEqual){
-    if(!one.isEqual(two)) return false;
-  } else {
-    if(one != two) return false;
-  }
-}
-
-Object.prototype.attributes = function(){
-  var attributes = [];
-  for(var p in this){ attributes.push(p); }
-  return attributes;
-}
-
 Jocha = {
-  mocks: []
+  mocks : [],
+  verify : function(){ this.mocks.each(function(m){})} 
 }
 Jocha.Mock = Class.create();
 Jocha.Mock.prototype = {
@@ -84,3 +54,36 @@ Object.extend(Object.prototype, {
 		}
 	}
 });
+
+// HELPERS
+
+// Thanks http://www.svendtofte.com/code/usefull_prototypes/
+Array.prototype.isEqual = function(other) {
+  if (this.length != other.length) return false;
+  for (var p = 0; p < other.length; p++) {
+    if(Object.equal( this[p], other[p] )) return false;
+  }
+  return true;
+}
+
+Object.prototype.isEqual = function(other) {
+  if(this.attributes().length != other.attributes().length) return false;
+  for(var p in this){
+    if(Object.equal( this[p], other[p] )) return false;
+  }
+  return true;
+}
+
+Object.equal = function(one, two){
+  if(typeof(one) == "object" && one != null && one.isEqual){
+    if(!one.isEqual(two)) return false;
+  } else {
+    if(one != two) return false;
+  }
+}
+
+Object.prototype.attributes = function(){
+  var attributes = [];
+  for(var p in this){ attributes.push(p); }
+  return attributes;
+}
