@@ -46,6 +46,12 @@
       assertTrue(obj.verify());
     }
     
+    function testWithHashParams() {
+      obj.expects("test").withParams({x:"x", y:"y"});
+      obj.test({x:"x", y:"y"});
+      assertTrue(obj.verify());
+    }
+    
     </script>
   </body>
 </html>

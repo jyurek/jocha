@@ -29,14 +29,17 @@ Object.prototype.attributes = function(){
   return attributes;
 }
 
-Mock = Class.create();
-Mock.prototype = {
+Jocha = {
+  mocks: []
+}
+Jocha.Mock = Class.create();
+Jocha.Mock.prototype = {
 	initialize : function() {
 		this.expectations = new Array();
 	}
 }
-Expectation = Class.create();
-Expectation.prototype = {
+Jocha.Expectation = Class.create();
+Jocha.Expectation.prototype = {
 	initialize : function(functionName) {
 		this.functionName = functionName;
 		this.params = [];
@@ -57,9 +60,11 @@ Object.extend(Object.prototype, {
 		this[functionName] = function() {
 			return this.methodMocked(functionName, arguments);
 		};
-		if (!this.mock)
-			this.mock = new Mock();
-		expectation = new Expectation(functionName);
+		if (!this.mock) {
+			this.mock = new Jocha.Mock();
+			Jocha.mocks.push(this.mock);
+	  }
+		expectation = new Jocha.Expectation(functionName);
 		this.mock.expectations.push(expectation);
 		return expectation;
 	},		    
