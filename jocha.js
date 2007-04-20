@@ -37,7 +37,7 @@ Expectation.prototype = {
 Object.extend(Object.prototype, {
 	expects : function(functionName) {
 		this[functionName] = function() {
-			this.methodMocked(functionName, arguments);
+			return this.methodMocked(functionName, arguments);
 		};
 		if (!this.mock)
 			this.mock = new Mock();
