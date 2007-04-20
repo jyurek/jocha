@@ -33,8 +33,17 @@
     }
     
     function testAndReturns() {
+      obj.expects("test").andReturns("pooka");
+      assertEquals("pooka", obj.test());
+      assertTrue(obj.verify());
+    }
+    
+    function testAndReturnsWithParams() {
       obj.expects("test").withParams("x", "y").andReturns("pooka");
-      assertEquals("pooka", obj.test("x", "y"))
+      assertNotEquals("pooka", obj.test());
+      assertFalse(obj.verify());
+      assertEquals("pooka", obj.test("x", "y"));
+      assertTrue(obj.verify());
     }
     
     </script>
