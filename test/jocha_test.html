@@ -52,6 +52,19 @@
       assertTrue(obj.verify());
     }
     
+    function testVerifyAll() {
+      var obj1 = new Object();
+			var obj2 = new Object();
+			var obj3 = new Object();
+			
+			obj1.expects("a")
+			obj2.expects("a").withParams("x")
+			obj3.expects("a").withParams(1)
+			
+			assertEquals(3, Jocha.mocks.length)
+			// Ironically and pathetically, testing failure here will actually fail the test
+    }
+    
     </script>
   </body>
 </html>
