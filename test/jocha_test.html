@@ -5,15 +5,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
     <title>jocha.js</title>
     <script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
-    <!-- Application scripts -->
-    <script language="JavaScript" type="text/javascript" src="../chrome/content/js/jocha.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../jocha.js"></script>
   </head>
   <body>
     <script language="JavaScript" type="text/javascript">
     function setUp() {
+			obj = new Object();
     }
     
     function tearDown() {
+    }
+    
+    function testExpectsOnAnyObjectOverwritesTheNamedMethodAndVerifiesCalls() {
+      obj.expects("test");
+      assertFalse(obj.verify());
+      obj.test();
+      assertTrue(obj.verify());
+    }
+    
+    function testWithParams() {
+      obj.expects("test").withParams("x", "y");
+      obj.test();
+      assertFalse(obj.verify());
+      obj.test("x","y")
+      assertTrue(obj.verify());
+    }
+    
+    function testAndReturns() {
+      obj.expects("test").withParams("x", "y").andReturns("pooka");
+      assertEquals("pooka", obj.test("x", "y"))
     }
     
     </script>
