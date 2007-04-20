@@ -1,7 +1,7 @@
 Jocha = {
   mocks : new Array(),
   // JSUnit specific
-  verifyAll : function(){ this.mocks.each(function(m){ assertTrue(m.verify())}) } 
+  verifyAll : function(){ this.mocks.each(function(m){ assertTrue(m.expectations.all(function(e){return e.invoked}))}) } 
 }
 Jocha.Mock = Class.create();
 Jocha.Mock.prototype = {
