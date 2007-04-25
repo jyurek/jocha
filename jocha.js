@@ -1,14 +1,24 @@
 Jocha = {
-  mocks : new Array(),
-  // JSUnit specific
-  verifyAll : function(){ this.mocks.each(function(m){ assertTrue(m.expectations.all(function(e){return e.invoked}))}) } 
+  mocks : [],
+  verifyAll : function(){ 
+    this.mocks.each(function(m){ 
+      assert( m.expectations.all(function(e){
+        return e.invoked;
+      }), "Not all expectations were met." );
+    });
+  },
+  reset: function(){
+    this.mocks = [];
+  }
 }
+
 Jocha.Mock = Class.create();
 Jocha.Mock.prototype = {
 	initialize : function() {
 		this.expectations = new Array();
 	}
 }
+
 Jocha.Expectation = Class.create();
 Jocha.Expectation.prototype = {
 	initialize : function(functionName) {
@@ -23,7 +33,15 @@ Jocha.Expectation.prototype = {
 	},
 	andReturns : function(returnVal) {
 		this.returnVal = returnVal;
+		return this;
 	}
+}
+
+Jocha.FailedExpectation = Class.create();
+Jocha.FailedExpectation.prototype = {
+  initialize: function(message) {
+    this.message = message;
+  }
 }
 
 Object.extend(Object.prototype, {
@@ -35,7 +53,7 @@ Object.extend(Object.prototype, {
 			this.mock = new Jocha.Mock();
 			Jocha.mocks.push(this.mock);
 	  }
-		expectation = new Jocha.Expectation(functionName);
+		var expectation = new Jocha.Expectation(functionName);
 		this.mock.expectations.push(expectation);
 		return expectation;
 	},		    
@@ -46,7 +64,7 @@ Object.extend(Object.prototype, {
 			return false;
 	},
 	methodMocked : function(functionName, args) {
-		expectation = this.mock.expectations.find(function(e){
+		var expectation = this.mock.expectations.find(function(e){
 		  return e.functionName == functionName && e.params.isEqual($A(args))
 		});
 		if (expectation) {
@@ -55,6 +73,12 @@ Object.extend(Object.prototype, {
 		}
 	}
 });
+
+if(typeof(assert) == "undefined") {
+  function assert(bool, message) {
+    throw new Jocha.FailedExpectation(message);
+  }
+}
 
 // HELPERS
 
