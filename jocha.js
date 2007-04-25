@@ -39,8 +39,10 @@ Jocha.Expectation.prototype = {
 
 Jocha.FailedExpectation = Class.create();
 Jocha.FailedExpectation.prototype = {
-  initialize: function(message) {
+  initialize: function(message, stack) {
     this.message = message;
+    this.stackTrace = stack || null;
+    this.assertion = true;
   }
 }
 
@@ -64,12 +66,26 @@ Object.extend(Object.prototype, {
 			return false;
 	},
 	methodMocked : function(functionName, args) {
-		var expectation = this.mock.expectations.find(function(e){
-		  return e.functionName == functionName && e.params.isEqual($A(args))
-		});
+	  var expectation = null;
+	  for(var i=0; i < this.mock.expectations.length; i++)
+	  {
+	    var e = this.mock.expectations[i];
+	    if(e.functionName == functionName && e.params.isEqual($A(args)))
+	    {
+	      expectation = e;
+	      break;
+	    }
+	  }
 		if (expectation) {
 			expectation.invoked = true;
 			return expectation.returnVal;
+		} else {
+		  var st = null;
+		  
+		  if(stackTrace){ st = stackTrace(); }
+		  else{ try{ throw new Error() } catch(e) { st = e.stack } }
+		  
+		  throw new Jocha.FailedExpectation(functionName + " was called with the wrong arguments.", st);
 		}
 	}
 });
@@ -101,9 +117,9 @@ Object.prototype.isEqual = function(other) {
 
 Object.equal = function(one, two){
   if(typeof(one) == "object" && one != null && one.isEqual){
-    if(!one.isEqual(two)) return false;
+    return( one.isEqual(two) );
   } else {
-    if(one != two) return false;
+    return( one != two );
   }
 }
 
