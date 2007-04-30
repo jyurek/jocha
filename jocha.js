@@ -7,12 +7,12 @@ Jocha = {
         return !e.invoked;
       }).compact();
     
-      var unmet_string = "Not all expectations were met:\n";
+      var unmet_lines = ["Not all expectations were met:"];
       unmet.each(function(e,i){
-        unmet_string += (i+1) + ": " + e.functionName + "(" + e.params.map(Object.inspect) + ")\n";
+        unmet_lines.push( (i+1) + ": " + e.functionName + "(" + e.params.map(Object.inspect) + ")" );
       });
       
-      assert(unmet.size() == 0, unmet_string);
+      assert(unmet.size() == 0, unmet_lines.join("\n"));
     });
   },
   reset: function()
@@ -129,15 +129,15 @@ Function.prototype.inspect = function() {
 Array.prototype.isEqual = function(other) {
   if (this.length != other.length) return false;
   for (var p = 0; p < other.length; p++) {
-    if(Object.equal( this[p], other[p] )) return false;
+    if(!Object.equal( this[p], other[p] )) return false;
   }
   return true;
 }
 
 Object.prototype.isEqual = function(other) {
   if(this.attributes().length != other.attributes().length) return false;
-  for(var p in this){
-    if(Object.equal( this[p], other[p] )) return false;
+  for(var p in this) {
+    if(!Object.equal( this[p], other[p] )) return false;
   }
   return true;
 }
